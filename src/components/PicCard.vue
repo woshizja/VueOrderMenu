@@ -42,7 +42,7 @@
 
 .pic-wrap img.blur {
     /*filter: blur(2px);*/
-    filter: grayscale(100%);
+    /*filter: grayscale(100%);*/
 }
 
 .card-desc .title {
