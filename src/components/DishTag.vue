@@ -6,6 +6,7 @@ Vue.component('tag-combo', {
         '<span>套餐</span>' +
         '</div>'
 });
+
 Vue.component('tag-promotion', {
     template: '<div class="dish-tag">' +
         '<span>特价</span>' +

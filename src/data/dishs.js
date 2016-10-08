@@ -2,6 +2,8 @@ import imgsrcs from './imgsrcs.js'
 
 var dishs = [{
     catalog: "招牌鲜鱼",
+    catalogID: 1100,
+    orderedDishs:[],
     dishs: [{
         dishID: 100,
         dishName: "花鲢",
@@ -60,6 +62,8 @@ var dishs = [{
     }]
 }, {
     catalog: "火锅必备",
+    catalogID: 1101,
+    orderedDishs:[],
     dishs: [{
         dishID: 103,
         dishName: "毛肚",
@@ -107,6 +111,8 @@ var dishs = [{
     }]
 }, {
     catalog: "川湘经典",
+    catalogID: 1102,
+    orderedDishs:[],
     dishs: [{
         dishID: 105,
         dishName: "红糖糍粑",
@@ -132,6 +138,8 @@ var dishs = [{
     }]
 }, {
     catalog: "浓香鱼汤",
+    catalogID: 1103,
+    orderedDishs:[],
     dishs: [{
         dishID: 106,
         dishName: "招牌鱼头汤",
@@ -157,6 +165,8 @@ var dishs = [{
     }]
 }, {
     catalog: "爽口凉菜",
+    catalogID: 1104,
+    orderedDishs:[],
     dishs: [{
         dishID: 107,
         dishName: "凉拌黄瓜",
@@ -171,6 +181,8 @@ var dishs = [{
     }]
 }, {
     catalog: "时令鲜蔬",
+    catalogID: 1105,
+    orderedDishs:[],
     dishs: [{
         dishID: 108,
         dishName: "蔬菜拼盘",
@@ -185,6 +197,8 @@ var dishs = [{
     }]
 }, {
     catalog: "主食",
+    catalogID: 1106,
+    orderedDishs:[],
     dishs: [{
         dishID: 109,
         dishName: "香蕉飞饼",
@@ -210,6 +224,8 @@ var dishs = [{
     }]
 }, {
     catalog: "饮料",
+    catalogID: 1107,
+    orderedDishs:[],
     dishs: [{
         dishID: 110,
         dishName: "可乐",

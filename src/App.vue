@@ -2,7 +2,7 @@
     <div id="app" v-bind:class="{showCart:totalNum}">
         <menu-header v-bind:active-index="activeIndex"></menu-header>
         <menu-item v-bind:filter-data="filterKey"></menu-item>
-        <menu-cart v-bind:total-number="totalNum" v-show="totalNum"></menu-cart>
+        <menu-cart v-bind:total-number="totalNum" v-bind:total-price="totalPri" v-show="totalNum"></menu-cart>
         <pic-card v-bind:img-srcs="picCardSrcs" v-if="showPicCard&&picCardSrcs" transition="piccard"></pic-card>
     </div>
 </template>
@@ -11,12 +11,14 @@ import MenuHeader from './components/MenuHeader'
 import MenuItem from './components/MenuItem.vue'
 import MenuCart from './components/MenuCart.vue'
 import PicCard from './components/PicCard.vue'
+import dishsData from './data/dishs.js'
 
 export default {
     data: function() {
         return {
             filterKey: '',
             totalNum: 0,
+            totalPri: 0,
             lockScroll: false,
             picCardSrcs: '',
             showPicCard: false,
@@ -62,11 +64,16 @@ export default {
         updataFilterkey: function(val) {
             this.filterKey = val;
         },
-        addCart: function() {
+        addCart: function(ci, di) {
             this.totalNum++;
+            this.totalPri += dishsData[ci].dishs[di].dishPrice;
+            dishsData[ci].orderedDishs.push(di);
         },
-        minusCart: function() {
+        minusCart: function(ci, di) {
             this.totalNum--;
+            this.totalPri -= dishsData[ci].dishs[di].dishPrice;
+            var pos = dishsData[ci].orderedDishs.indexOf(di);
+            dishsData[ci].orderedDishs.splice(pos,1);
         },
         toggleScroll: function() {
             if (document.documentElement.classList.contains("lock")) {

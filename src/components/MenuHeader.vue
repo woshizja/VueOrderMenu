@@ -1,10 +1,6 @@
 <template>
     <div v-el:head class="menu-header">
-        <div class="catalog" v-bind:class="{visible: showMenu}" v-on:click="toggleMenu">
-            <div class="catalog-content">
-                <menu-contents v-bind:active-catalog="activeIndex"></menu-contents>
-            </div>
-        </div>
+        <menu-contents v-bind:active-catalog="activeIndex" v-bind:class="{visible: showMenu}" v-bind:toggle-menu="toggleMenu"></menu-contents>
         <div class="header-title fixed">
             <a class="header-menu" v-el:menu v-on:click="toggleMenu"></a>
             <p v-el:title>{{shopTitle}}</p>
@@ -62,9 +58,10 @@ export default {
             this.$els.menu.style.transform = "translateY(" + p * 34 + "px)";
         },
         toggleMenu: function(e) {
-            if (e.target === e.currentTarget) {
-                this.showMenu = !this.showMenu;
-            }
+        	this.showMenu = !this.showMenu;
+            // if (e.target === e.currentTarget) {
+            //     this.showMenu = !this.showMenu;
+            // }
             // this.$dispatch('toggleScroll');
         },
         toggleSearch: function(e) {
@@ -113,41 +110,6 @@ export default {
     z-index: -1;
     background: url(../img/titleBG.jpg) no-repeat #ccc;
     background-size: cover;
-}
-
-.catalog {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    transform: translateX(-100%);
-    will-change: transform, opacity;
-    transition: all 300ms linear;
-    /*background: rgba(0, 0, 0, 0.4);*/
-    opacity: 0;
-}
-
-.catalog.visible {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.catalog .catalog-content {
-    position: relative;
-    width: 38.2%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.85);
-    box-shadow: 2px 0 8px 2px rgba(0, 0, 0, 0.2);
-    font-size: 14px;
-    color: #333;
-    padding: 10px 10px 0 10px;
-    text-align: center;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .header-title {

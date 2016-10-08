@@ -1,47 +1,92 @@
 <template>
-    <div class="menu-contents">
-        <div class="avatar">
-            <img src="../img/avatar.jpg">
+    <div class="catalogs" v-on:touchstart="handleStart" v-on:touchend="handleEnd">
+        <div class="menu-contents">
+            <div class="avatar">
+                <img src="../img/avatar.jpg">
+            </div>
+            <div class="my-center">
+                <a>个人中心</a>
+            </div>
+            <div class="tip">
+                <span>本店菜单</span>
+            </div>
+            <ul class="catalog">
+                <li v-for="catalog in catalogs" v-bind:class="{active:$index==activeCatalog}" v-on:click="updateCatalog($index)">
+                    <span>{{catalog.catalog}}</span>
+                    <span class="num" v-show="catalog.orderedDishs.length">{{catalog.orderedDishs.length}}</span>
+                </li>
+            </ul>
         </div>
-        <div class="my-center">
-            <a>个人中心</a>
-        </div>
-        <div class="tip">
-            <span>本店菜单</span>
-        </div>
-        <ul class="catalog">
-            <li v-for="catalog in catalogs" v-bind:class="{active:$index==activeCatalog}" v-on:click="updateCatalog($index)">{{catalog.name}}</li>
-        </ul>
     </div>
 </template>
 <script>
-import ContentsData from '../data/catalog.js'
+import ContentsData from '../data/dishs.js'
 
 export default {
-    props: ['activeCatalog'],
+    props: ['activeCatalog', 'toggleMenu'],
     data: function() {
         return {
-            catalogs: ContentsData
+            catalogs: ContentsData,
+            touchStartPos: 0
         };
     },
     methods: {
-        updateCatalog: function(index){
+        updateCatalog: function(index) {
             this.$dispatch("updateCatalog", index)
+        },
+        handleStart: function(e){
+            this.touchStartPos = e.targetTouches[0].clientX;
+        },
+        handleEnd: function(e){
+            if(this.touchStartPos - e.changedTouches[0].clientX>35){
+                this.toggleMenu();
+            }
+            this.touchStartPos = 0;
         }
     }
 }
 </script>
 <style scoped>
-.menu-contents {
-    color: #444;
+.catalogs {
+    position: fixed;
+    left: 0;
+    top: 44px;
+    bottom: 0;
+    width: 38.2%;
+    /*right: 0;*/
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    will-change: transform, opacity;
+    transition: all 200ms ease;
+    opacity: 0;
+}
+
+.catalogs.visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+.catalogs .menu-contents {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 2px 0 8px 2px rgba(0, 0, 0, 0.2);
     font-size: 14px;
+    color: #333;
+    padding: 10px 10px 0 10px;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-weight: bold;
 }
 
 .menu-contents .avatar {
     width: 70px;
     height: 70px;
-    display: inline-block;
+    margin: 0 auto;
 }
 
 .avatar img {
@@ -82,7 +127,7 @@ export default {
 }
 
 .catalog li.active {
-    background: rgba(225,225,225,0.5);
+    background: rgba(225, 225, 225, 0.5);
 }
 
 .catalog li.active:before {
@@ -94,5 +139,20 @@ export default {
     position: absolute;
     top: 0;
     left: -10px;
+}
+
+.catalog li .num {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: normal;
+    border-radius: 50%;
+    text-align: center;
+    color: #fff;
+    background: #6CCA6A;
+    margin-left: 10px;
 }
 </style>

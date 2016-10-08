@@ -14,6 +14,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    transform: translateZ(0);
 }
 
 .menu-cart .cart-totalnum {
@@ -49,9 +50,16 @@
     color: #fff;
     border-radius: 2px;
     cursor: pointer;
-    border:none;
+    border: none;
     outline: none;
     flex-grow: 0;
+}
+
+.menu-cart .cart-price{
+    color: #f63;
+    font-size: 18px;
+    font-weight: 600;
+    flex-grow: 1;
 }
 </style>
 <template>
@@ -62,11 +70,14 @@
         <div class="cart-desc">
             <span class="text">共{{totalNumber}}个菜</span>
         </div>
+        <div class="cart-price">
+        	<span class="price">￥{{totalPrice}}</span>
+        </div>
         <button class="cart-btn">查看购物车</button>
     </div>
 </template>
 <script>
 export default {
-	props: ['totalNumber']
+    props: ['totalNumber', "totalPrice"]
 }
 </script>
