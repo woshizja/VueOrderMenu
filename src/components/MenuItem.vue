@@ -1,5 +1,5 @@
 <template>
-    <div class="menu-wrap" v-on:click="test">
+    <div class="menu-wrap">
         <div class="menu-items" v-for="items in dishItems | filterBy filterData ">
             <div class="menu-catalog">{{items.catalog}}</div>
             <div class="menu-item" v-for="item in items.dishs | filterBy filterData in 'dishDesc' 'dishName' 'searchKey' ">
@@ -56,9 +56,6 @@ export default {
         openPicCard: function(imgSrcs) {
             this.$dispatch("openPicCard", imgSrcs);
             this.$dispatch('toggleScroll');
-        },
-        test:function(e){
-            console.log(e);
         }
     },
     components: {
