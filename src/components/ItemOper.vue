@@ -13,15 +13,15 @@
 </template>
 <script>
 export default {
-    props: ["dishNum", "catalogIndex", "dishsIndex"],
+    props: ["dishNum", "dishId", "catalogId"],
     methods: {
         addDish: function() {
             this.dishNum++;
-            this.$dispatch("addCart", this.catalogIndex, this.dishsIndex);
+            this.$dispatch("addCart", this.dishId, this.catalogId);
         },
         minusDish: function() {
             this.dishNum--;
-            this.$dispatch("minusCart", this.catalogIndex, this.dishsIndex);
+            this.$dispatch("minusCart", this.dishId, this.catalogId);
         }
     }
 }

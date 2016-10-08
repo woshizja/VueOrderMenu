@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="menu-operation">
-                    <item-oper v-bind:dish-num.sync="item.dishNum" v-bind:catalog-index="$parent.$index" v-bind:dishs-index="$index"></item-oper>
+                    <item-oper v-bind:dish-num.sync="item.dishNum" v-bind:dish-id="item.dishID" v-bind:catalog-id="items.catalogID"></item-oper>
                 </div>
             </div>
         </div>

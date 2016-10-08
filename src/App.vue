@@ -52,6 +52,27 @@ export default {
             for (var i = 0; i < eles.length; i++) {
                 this.catalogPos.push(eles[i].offsetTop - 44);
             }
+        },
+        searchDish: function(did, cid) {
+            var len = dishsData.length;
+            var res = [];
+            for (var i = 0; i < len; i++) {
+                if (dishsData[i].catalogID == cid) {
+                    res.push(i);
+                    break;
+                }
+            }
+            if (i < len) {
+                len = dishsData[i].dishs.length;
+                for (var j = 0; j < len; j++) {
+                    if (dishsData[i].dishs[j].dishID == did) {
+                        res.push(j);
+                        res.push(dishsData[i].dishs[j].dishPrice);
+                        break;
+                    }
+                }
+                return res;
+            }
         }
     },
     events: {
@@ -64,16 +85,22 @@ export default {
         updataFilterkey: function(val) {
             this.filterKey = val;
         },
-        addCart: function(ci, di) {
-            this.totalNum++;
-            this.totalPri += dishsData[ci].dishs[di].dishPrice;
-            dishsData[ci].orderedDishs.push(di);
+        addCart: function(did, cid) {
+            var dishInfo = this.searchDish(did, cid);
+            if (dishInfo.length === 3) {
+                this.totalNum++;
+                this.totalPri += dishInfo[2];
+                dishsData[dishInfo[0]].orderedDishs.push(did);
+            }
         },
-        minusCart: function(ci, di) {
-            this.totalNum--;
-            this.totalPri -= dishsData[ci].dishs[di].dishPrice;
-            var pos = dishsData[ci].orderedDishs.indexOf(di);
-            dishsData[ci].orderedDishs.splice(pos,1);
+        minusCart: function(did, cid) {
+            var dishInfo = this.searchDish(did, cid);
+            if (dishInfo.length === 3) {
+                this.totalNum--
+                    this.totalPri -= dishInfo[2];
+                var pos = dishsData[dishInfo[0]].orderedDishs.indexOf(did);
+                dishsData[dishInfo[0]].orderedDishs.splice(pos, 1);
+            }
         },
         toggleScroll: function() {
             if (document.documentElement.classList.contains("lock")) {
