@@ -1,8 +1,8 @@
 <template>
     <div class="menu-wrap">
-        <div class="menu-items" v-for="items in dishItems | filterBy filterData ">
+        <div class="menu-items" v-for="items in dishItems | filterBy filterData " v-bind:key="items.catalogID">
             <div class="menu-catalog">{{items.catalog}}</div>
-            <div class="menu-item" v-for="item in items.dishs | filterBy filterData in 'dishDesc' 'dishName' 'searchKey' ">
+            <div class="menu-item" v-for="item in items.dishs | filterBy filterData in 'dishDesc' 'dishName' 'searchKey' " v-bind:key="item.dishID">
                 <div class="menu-img">
                     <img v-bind:src="item.imgSrc" v-on:click.stop="openPicCard(item.imgSrcs)">
                 </div>

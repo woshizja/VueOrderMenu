@@ -101,7 +101,7 @@ export default {
 .menu-header:before {
     content: '';
     opacity: 0.3;
-    filter: blur(3px);
+    filter: blur(5px);
     position: absolute;
     left: 0;
     top: 0;

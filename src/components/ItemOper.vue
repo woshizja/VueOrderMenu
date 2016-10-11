@@ -17,11 +17,11 @@ export default {
     methods: {
         addDish: function() {
             this.dishNum++;
-            this.$dispatch("addCart", this.dishId, this.catalogId);
+            // this.$dispatch("addCart", this.dishId, this.catalogId);
         },
         minusDish: function() {
             this.dishNum--;
-            this.$dispatch("minusCart", this.dishId, this.catalogId);
+            // this.$dispatch("minusCart", this.dishId, this.catalogId);
         }
     }
 }

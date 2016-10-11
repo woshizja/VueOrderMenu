@@ -37,13 +37,19 @@ export default {
         var me = this;
         window.addEventListener("scroll", function(e) {
             var st = document.body.scrollTop;
-            var len = me.catalogPos.length;
-            for (var i = 0; i < len; i++) {
-                if (st < me.catalogPos[i]) {
-                    me.activeIndex = i - 1;
-                    break;
+            me.catalogPos.some(function(pos, index) {
+                if (st < pos) {
+                    me.activeIndex = index - 1;
+                    return true;
                 }
-            }
+            });
+            // var len = me.catalogPos.length;
+            // for (var i = 0; i < len; i++) {
+            //     if (st < me.catalogPos[i]) {
+            //         me.activeIndex = i - 1;
+            //         break;
+            //     }
+            // }
         });
     },
     methods: {
@@ -96,8 +102,8 @@ export default {
         minusCart: function(did, cid) {
             var dishInfo = this.searchDish(did, cid);
             if (dishInfo.length === 3) {
-                this.totalNum--
-                    this.totalPri -= dishInfo[2];
+                this.totalNum--;
+                this.totalPri -= dishInfo[2];
                 var pos = dishsData[dishInfo[0]].orderedDishs.indexOf(did);
                 dishsData[dishInfo[0]].orderedDishs.splice(pos, 1);
             }
