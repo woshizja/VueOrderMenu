@@ -11,7 +11,7 @@
                 <span>本店菜单</span>
             </div>
             <ul class="catalog">
-                <li v-for="catalog in catalogs" v-bind:class="{active:$index==activeCatalog}" v-on:click="updateCatalog($index)">
+                <li v-for="(catalog, index) in catalogs" v-bind:class="{active:index==activeCatalog}" v-on:click="updateCatalog(index)">
                     <span>{{catalog.catalog}}</span>
                     <span class="num" v-show="catalog.orderedDishs.length">{{catalog.orderedDishs.length}}</span>
                 </li>
@@ -21,6 +21,7 @@
 </template>
 <script>
 import ContentsData from '../data/dishs.js'
+import eventHub from '../eventHub.js'
 
 export default {
     props: ['activeCatalog', 'toggleMenu'],
@@ -32,7 +33,7 @@ export default {
     },
     methods: {
         updateCatalog: function(index) {
-            this.$dispatch("updateCatalog", index)
+            eventHub.$emit("update-cindex", index);
         },
         handleStart: function(e){
             this.touchStartPos = e.targetTouches[0].clientX;

@@ -1,9 +1,9 @@
 <template>
-    <div v-el:head class="menu-header">
+    <div ref="head" class="menu-header">
         <menu-contents v-bind:active-catalog="activeIndex" v-bind:class="{visible: showMenu}" v-bind:toggle-menu="toggleMenu"></menu-contents>
         <div class="header-title fixed">
-            <a class="header-menu" v-el:menu v-on:click="toggleMenu"></a>
-            <p v-el:title>{{shopTitle}}</p>
+            <a class="header-menu" ref="menu" v-on:click="toggleMenu"></a>
+            <p ref="title">{{shopTitle}}</p>
             <div class="search-wrap" v-bind:class="{show:isSearching}" v-on:click.stop="toggleSearch">
                 <input type="text" class="search-input" placeholder="搜索菜品" v-model="filterKey"></input>
                 <span class="search-icon" v-bind:class="icoStyle"></span>
@@ -13,12 +13,15 @@
         <div class="header-address">地址：{{shopAddress}}</div>
         <div class="header-tel">电话：{{shopTel}}</div>
         <div class="header-describe">{{shopDesc}}</div>
-        <search-tip v-show="!filterKey&&isSearching" transition="searchtip"></search-tip>
+        <transition name="searchtip">
+            <search-tip v-show="!filterKey&&isSearching" v-on:click-tip="clickTip"></search-tip>
+        </transition>
     </div>
 </template>
 <script>
 import MenuContents from './MenuContents.vue'
 import SearchTip from '../components/SearchTip.vue'
+import eventHub from '../eventHub.js'
 
 export default {
     props: ['activeIndex'],
@@ -40,9 +43,9 @@ export default {
             showMenu: false
         };
     },
-    ready() {
-        this.headHeight = this.$els.head.offsetHeight - 44;
-        this.moveWidth = (window.innerWidth - this.$els.title.offsetWidth * 1.2 - 15) / 2;
+    mounted: function() {
+        this.headHeight = this.$refs.head.offsetHeight - 44;
+        this.moveWidth = (window.innerWidth - this.$refs.title.offsetWidth * 1.2 - 15) / 2;
         var me = this;
         window.addEventListener("scroll", function(e) {
             var scrollHeight = document.body.scrollTop;
@@ -52,17 +55,16 @@ export default {
         });
     },
     methods: {
+        clickTip: function(val) {
+            this.filterKey = val;
+        },
         titleAnimation: function(p) {
-            this.$els.title.parentNode.style.backgroundColor = "rgba(255,255,255," + (0.3 + 0.63 * p) + ")";
-            this.$els.title.style.transform = "translateX(" + p * this.moveWidth + "px)" + " scale(" + (1 + 0.2 * p) + ")";
-            this.$els.menu.style.transform = "translateY(" + p * 34 + "px)";
+            this.$refs.title.parentNode.style.backgroundColor = "rgba(255,255,255," + (0.3 + 0.63 * p) + ")";
+            this.$refs.title.style.transform = "translateX(" + p * this.moveWidth + "px)" + " scale(" + (1 + 0.2 * p) + ")";
+            this.$refs.menu.style.transform = "translateY(" + p * 34 + "px)";
         },
         toggleMenu: function(e) {
         	this.showMenu = !this.showMenu;
-            // if (e.target === e.currentTarget) {
-            //     this.showMenu = !this.showMenu;
-            // }
-            // this.$dispatch('toggleScroll');
         },
         toggleSearch: function(e) {
             if (e.target.tagName !== "INPUT") {
@@ -73,12 +75,7 @@ export default {
     },
     watch: {
         filterKey: function(newVal) {
-            this.$dispatch('updataFilterkey', newVal);
-        }
-    },
-    events: {
-        clickTip: function(val) {
-            this.filterKey = val;
+            eventHub.$emit('updata-filterkey', newVal);
         }
     }
 }
@@ -173,11 +170,11 @@ export default {
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    transition: width 0.5s ease;
     overflow: hidden;
 }
 
 .header-title .search-wrap.show {
+    transition: width 0.5s ease;
     width: 100%;
 }
 
@@ -239,14 +236,13 @@ export default {
     background-position: -78px;
 }
 
-.searchtip-transition {
-    opacity: 1;
+.searchtip-enter-active, .searchtip-leave-active {
     transition: opacity 0.5s ease;
     will-change: opacity;
 }
 
 .searchtip-enter,
-.searchtip-leave {
+.searchtip-leave-active {
     opacity: 0;
 }
 </style>

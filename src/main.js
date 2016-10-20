@@ -5,6 +5,8 @@ FastClick.attach(document.body);
 
 /* eslint-disable no-new */
 new Vue({
-  el: 'body',
-  components: { App }
+    el: '#app',
+    render: (createElement)=>{
+        return createElement(App);
+    }
 })

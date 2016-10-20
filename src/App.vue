@@ -1,182 +1,188 @@
 <template>
-    <div id="app" v-bind:class="{showCart:totalNum}">
-        <menu-header v-bind:active-index="activeIndex"></menu-header>
-        <menu-item v-bind:filter-data="filterKey"></menu-item>
-        <menu-cart v-bind:total-number="totalNum" v-bind:total-price="totalPri" v-show="totalNum"></menu-cart>
-        <pic-card v-bind:img-srcs="picCardSrcs" v-if="showPicCard&&picCardSrcs" transition="piccard"></pic-card>
-    </div>
+      <div id="app" v-bind:class="{showCart:totalNum}">
+            <menu-header v-bind:active-index="activeIndex"></menu-header>
+            <menu-items v-bind:filter-data="filterKey"></menu-items>
+            <menu-cart v-bind:total-number="totalNum" v-bind:total-price="totalPri" v-show="totalNum"></menu-cart>
+            <transition name="piccard">
+                  <pic-card v-bind:img-srcs="picCardSrcs" v-if="showPicCard&&picCardSrcs"></pic-card>
+            </transition>
+      </div>
 </template>
 <script>
 import MenuHeader from './components/MenuHeader'
-import MenuItem from './components/MenuItem.vue'
+import MenuItems from './components/MenuItems.vue'
 import MenuCart from './components/MenuCart.vue'
 import PicCard from './components/PicCard.vue'
 import dishsData from './data/dishs.js'
+import eventHub from './eventHub.js'
 
 export default {
-    data: function() {
-        return {
-            filterKey: '',
-            totalNum: 0,
-            totalPri: 0,
-            lockScroll: false,
-            picCardSrcs: '',
-            showPicCard: false,
-            activeIndex: 0,
-            catalogPos: []
-        };
-    },
-    components: {
-        MenuHeader,
-        MenuItem,
-        MenuCart,
-        PicCard
-    },
-    ready: function() {
-        this.initCatalogPos();
-        var me = this;
-        window.addEventListener("scroll", function(e) {
-            var st = document.body.scrollTop;
-            me.catalogPos.some(function(pos, index) {
-                if (st < pos) {
-                    me.activeIndex = index - 1;
-                    return true;
-                }
+      data: function() {
+            return {
+                  filterKey: '',
+                  totalNum: 0,
+                  totalPri: 0,
+                  lockScroll: false,
+                  picCardSrcs: '',
+                  showPicCard: false,
+                  activeIndex: 0,
+                  catalogPos: []
+            };
+      },
+      components: {
+            MenuHeader,
+            MenuItems,
+            MenuCart,
+            PicCard
+      },
+      created: function() {
+            eventHub.$on('open-imgcard', this.openPicCard);
+            eventHub.$on('close-imgcard', this.closePicCard);
+            eventHub.$on('toggle-scroll', this.toggleScroll);
+            eventHub.$on('update-cindex', this.updateCatalog);
+            eventHub.$on('updata-filterkey', this.updataFilterkey);
+            eventHub.$on('add-dish', this.addDish);
+            eventHub.$on('minus-dish', this.minusDish);
+      },
+      mounted: function() {
+            this.initCatalogPos();
+            var me = this;
+            window.addEventListener("scroll", function(e) {
+                  var st = document.body.scrollTop;
+                  me.catalogPos.some(function(pos, index) {
+                        if (st < pos) {
+                              me.activeIndex = index - 1;
+                              return true;
+                        }
+                  });
             });
-            // var len = me.catalogPos.length;
-            // for (var i = 0; i < len; i++) {
-            //     if (st < me.catalogPos[i]) {
-            //         me.activeIndex = i - 1;
-            //         break;
-            //     }
-            // }
-        });
-    },
-    methods: {
-        initCatalogPos: function() {
-            var eles = document.querySelectorAll(".menu-catalog");
-            for (var i = 0; i < eles.length; i++) {
-                this.catalogPos.push(eles[i].offsetTop - 44);
+      },
+      methods: {
+            closePicCard: function() {
+                  this.picCardSrcs = '';
+                  this.showPicCard = false;
+            },
+            toggleScroll: function() {
+                  if (document.documentElement.classList.contains("lock")) {
+                        document.documentElement.classList.remove("lock");
+                  } else {
+                        document.documentElement.classList.add("lock");
+                  }
+            },
+            openPicCard: function(srcs) {
+                  // 验证
+                  if (srcs.smallSrcs.length && srcs.smallSrcs.length === srcs.bigSrcs.length) {
+                        this.picCardSrcs = srcs;
+                        this.showPicCard = true;
+                  }
+            },
+            updataFilterkey: function(val) {
+                  this.filterKey = val;
+            },
+            updateCatalog: function(index) {
+                  window.scrollTo(0, this.catalogPos[index]);
+                  this.$nextTick(function() {
+                        this.activeIndex = index;
+                  });
+            },
+            addDish: function(did, cid) {
+                  var dishInfo = this.searchDish(did, cid);
+                  if (dishInfo.length === 3) {
+                        this.totalNum++;
+                        this.totalPri += dishInfo[2];
+                        dishsData[dishInfo[0]].orderedDishs.push(did);
+                        dishsData[dishInfo[0]].dishs[dishInfo[1]].dishNum++;
+                  }
+            },
+            minusDish: function(did, cid) {
+                  var dishInfo = this.searchDish(did, cid);
+                  if (dishInfo.length === 3) {
+                        this.totalNum--;
+                        this.totalPri -= dishInfo[2];
+                        var pos = dishsData[dishInfo[0]].orderedDishs.indexOf(did);
+                        dishsData[dishInfo[0]].orderedDishs.splice(pos, 1);
+                        dishsData[dishInfo[0]].dishs[dishInfo[1]].dishNum--
+                  }
+            },
+            initCatalogPos: function() {
+                  var eles = document.querySelectorAll(".menu-catalog");
+                  for (var i = 0; i < eles.length; i++) {
+                        this.catalogPos.push(eles[i].offsetTop - 44);
+                  }
+            },
+            searchDish: function(did, cid) {
+                  var len = dishsData.length;
+                  var res = [];
+                  for (var i = 0; i < len; i++) {
+                        if (dishsData[i].catalogID == cid) {
+                              res.push(i);
+                              break;
+                        }
+                  }
+                  if (i < len) {
+                        len = dishsData[i].dishs.length;
+                        for (var j = 0; j < len; j++) {
+                              if (dishsData[i].dishs[j].dishID == did) {
+                                    res.push(j);
+                                    res.push(dishsData[i].dishs[j].dishPrice);
+                                    break;
+                              }
+                        }
+                        return res;
+                  }
             }
-        },
-        searchDish: function(did, cid) {
-            var len = dishsData.length;
-            var res = [];
-            for (var i = 0; i < len; i++) {
-                if (dishsData[i].catalogID == cid) {
-                    res.push(i);
-                    break;
-                }
-            }
-            if (i < len) {
-                len = dishsData[i].dishs.length;
-                for (var j = 0; j < len; j++) {
-                    if (dishsData[i].dishs[j].dishID == did) {
-                        res.push(j);
-                        res.push(dishsData[i].dishs[j].dishPrice);
-                        break;
-                    }
-                }
-                return res;
-            }
-        }
-    },
-    events: {
-        updateCatalog: function(index) {
-            window.scrollTo(0, this.catalogPos[index]);
-            this.$nextTick(function() {
-                this.activeIndex = index;
-            });
-        },
-        updataFilterkey: function(val) {
-            this.filterKey = val;
-        },
-        addCart: function(did, cid) {
-            var dishInfo = this.searchDish(did, cid);
-            if (dishInfo.length === 3) {
-                this.totalNum++;
-                this.totalPri += dishInfo[2];
-                dishsData[dishInfo[0]].orderedDishs.push(did);
-            }
-        },
-        minusCart: function(did, cid) {
-            var dishInfo = this.searchDish(did, cid);
-            if (dishInfo.length === 3) {
-                this.totalNum--;
-                this.totalPri -= dishInfo[2];
-                var pos = dishsData[dishInfo[0]].orderedDishs.indexOf(did);
-                dishsData[dishInfo[0]].orderedDishs.splice(pos, 1);
-            }
-        },
-        toggleScroll: function() {
-            if (document.documentElement.classList.contains("lock")) {
-                document.documentElement.classList.remove("lock");
-            } else {
-                document.documentElement.classList.add("lock");
-            }
-        },
-        openPicCard: function(srcs) {
-            // 验证
-            if (srcs.smallSrcs.length && srcs.smallSrcs.length === srcs.bigSrcs.length) {
-                this.picCardSrcs = srcs;
-                this.showPicCard = true;
-            }
-        },
-        closePicCard: function() {
-            this.picCardSrcs = '';
-            this.showPicCard = false;
-        }
-    }
+      }
 }
 </script>
 <style>
 body {
-    font-family: "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Roboto, Noto, sans-serif;
-    font-size: 12px;
-    -webkit-font-smoothing: antialiased;
-    text-justify: 100%;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Roboto, Noto, sans-serif;
+      font-size: 12px;
+      -webkit-font-smoothing: antialiased;
+      text-justify: 100%;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    outline: 0;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+      outline: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
 }
 
 html.lock {
-    overflow: hidden;
-    touch-action: none;
+      overflow: hidden;
+      touch-action: none;
 }
 
 .lock body {
-    overflow: hidden;
-    touch-action: none;
+      overflow: hidden;
+      touch-action: none;
 }
 
 #app {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
 }
 
 #app.showCart .menu-wrap {
-    padding-bottom: 54px;
+      padding-bottom: 54px;
 }
 
-.piccard-transition {
-    transition: all 0.3s ease;
-    will-change: transform, opacity;
-    transform: scale(1);
-    opacity: 1;
+.piccard-enter-active,
+.piccard-leave-active {
+      transition: all 0.3s ease;
+      will-change: transform, opacity;
+      transform: scale(1);
+      opacity: 1;
 }
 
-.piccard-leave,
+.piccard-leave-active,
 .piccard-enter {
-    transform: scale(0.8);
-    opacity: 0;
+      transform: scale(0.8);
+      opacity: 0;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="search-tips">
         <div class="search-tip" v-for="tip in tips" v-on:click="handleClick(tip.name)">
-            <span class="{{tip.tag}}">{{tip.name}}</span>
+            <span v-bind:class="tip.tag">{{tip.name}}</span>
         </div>
     </div>
 </template>
@@ -16,7 +16,7 @@ export default {
     },
     methods: {
         handleClick: function(tip){
-            this.$dispatch('clickTip', tip);
+            this.$emit('click-tip', tip);
         }
     }
 }
