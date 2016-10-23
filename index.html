@@ -2,17 +2,23 @@
 <html>
 
 <head>
-    <meta charset=utf-8>
-    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-    <title>ordermenu</title>
-    <link href=/VueOrderMenu/dist/static/css/app.ee0fc209f1dba6dc2e70f4bdcfa0b754.css rel=stylesheet>
+      <meta charset=utf-8>
+      <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+      <title>ordermenu</title>
+      <link href=/VueOrderMenu/dist/static/css/app.0d4715cd53d3a889808b71bc4fd7264d.css rel=stylesheet>
 </head>
 
 <body>
-    <div id="app"></div>
-    <script src=/VueOrderMenu/dist/static/js/manifest.015b8923bf81ba3b0212.js></script>
-      <script src=/VueOrderMenu/dist/static/js/vendor.87c85e4b2e9f98f3d4dc.js></script>
-      <script src=/VueOrderMenu/dist/static/js/app.652ad83ee092277ad523.js></script>
+      <div id="app">
+            <transition name="test">
+                  <keep-alive>
+                        <router-view keep-alive></router-view>
+                  </keep-alive>
+            </transition>
+      </div>
+      <script src=/VueOrderMenu/dist/static/js/manifest.898e514f74b0da023963.js></script>
+      <script src=/VueOrderMenu/dist/static/js/vendor.66a8ab8edfd9b24e8f77.js></script>
+      <script src=/VueOrderMenu/dist/static/js/app.775089825519d8796249.js></script>
 </body>
 
 </html>

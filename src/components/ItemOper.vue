@@ -15,20 +15,26 @@
 import eventHub from '../eventHub.js'
 
 export default {
-      props: ["dishNum", "dishId", "catalogId"],
-      data: function() {
-            return {
-                  num: this.dishNum
-            };
+      props: ["dishNum", "dishId", "catalogId", "insideMenu"],
+      computed: {
+            num: function() {
+                  return this.dishNum;
+            }
       },
       methods: {
             addDish: function() {
-                  this.num++;
-                  eventHub.$emit("add-dish", this.dishId, this.catalogId);
+                  if(this.insideMenu){
+                        eventHub.$emit("add-dish", this.dishId, this.catalogId);
+                  } else {
+                        eventHub.$emit("cart-add-dish", this.dishId, this.catalogId);
+                  }
             },
             minusDish: function() {
-                  this.num--;
-                  eventHub.$emit("minus-dish", this.dishId, this.catalogId);
+                   if(this.insideMenu){
+                        eventHub.$emit("minus-dish", this.dishId, this.catalogId);
+                  } else {
+                        eventHub.$emit("cart-minus-dish", this.dishId, this.catalogId);
+                  }
             }
       }
 }
@@ -57,6 +63,7 @@ export default {
       height: 30px;
       position: relative;
       background: transparent;
+      cursor: pointer;
 }
 
 .minus .bg {
@@ -92,6 +99,7 @@ export default {
       height: 30px;
       position: relative;
       background: transparent;
+      cursor: pointer;
 }
 
 .add .bg {

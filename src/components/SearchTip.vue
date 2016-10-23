@@ -1,19 +1,14 @@
 <template>
     <div class="search-tips">
-        <div class="search-tip" v-for="tip in tips" v-on:click="handleClick(tip.name)">
+        <div class="search-tip" v-for="tip in tipsData" v-on:click="handleClick(tip.name)">
             <span v-bind:class="tip.tag">{{tip.name}}</span>
         </div>
     </div>
 </template>
 <script>
-import Tips from '../data/tips.js'
 
 export default {
-    data: function(){
-        return {
-            tips: Tips
-        };
-    },
+    props: ['tipsData'],
     methods: {
         handleClick: function(tip){
             this.$emit('click-tip', tip);

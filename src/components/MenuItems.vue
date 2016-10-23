@@ -22,7 +22,7 @@
                               </div>
                         </div>
                         <div class="menu-operation">
-                              <item-oper v-bind:dish-num="item.dishNum" v-bind:dish-id="item.dishID" v-bind:catalog-id="items.catalogID"></item-oper>
+                              <item-oper v-bind:dish-num="item.dishNum" v-bind:dish-id="item.dishID" v-bind:catalog-id="items.catalogID" inside-menu="true"></item-oper>
                         </div>
                   </div>
             </div>
@@ -34,23 +34,17 @@ import {
       TagCombo,
       TagPromotion
 } from './DishTag.vue'
-import dishsData from '../data/dishs.js'
 import eventHub from '../eventHub.js'
 
 export default {
-      props: ['filterData'],
-      data: function() {
-            return {
-                  dishItems: dishsData
-            };
-      },
+      props: ['filterData', 'dishsData'],
       computed: {
             catalogFilter: function() {
                   if (!this.filterData) {
-                        return this.dishItems;
+                        return this.dishsData;
                   } else {
                         var key = this.filterData;
-                        return this.dishItems.filter((item) => {
+                        return this.dishsData.filter((item) => {
                               var flag = item.dishs.some((dish) => {
                                     if (dish.dishName.indexOf(key) > -1 || dish.dishDesc.indexOf(key) > -1 || dish.searchKey.indexOf(key) > -1) {
                                           return true;
@@ -62,7 +56,7 @@ export default {
             }
       },
       created: function() {
-            this.dishItems.forEach(function(items) {
+            this.dishsData.forEach(function(items) {
                   items.dishs.forEach(function(item, index, items) {
                         if (item.dishDesc.length > 30) {
                               items[index].dishShortDesc = item.dishDesc.slice(0, 30) + '...';
@@ -76,7 +70,7 @@ export default {
                   eventHub.$emit('toggle-scroll');
             },
             dishFilter: function(dishs) {
-                var key = this.filterData;
+                  var key = this.filterData;
                   return dishs.filter((dish) => {
                         if (dish.dishName.indexOf(key) > -1 || dish.dishDesc.indexOf(key) > -1 || dish.searchKey.indexOf(key) > -1) {
                               return true;
@@ -101,7 +95,7 @@ export default {
       flex-wrap: nowrap;
       justify-content: flex-start;
       align-items: flex-start;
-      /*background: #fff;*/
+      background: #fff;
       width: 100%;
       margin: 0;
 }
