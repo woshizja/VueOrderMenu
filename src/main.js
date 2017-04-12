@@ -26,6 +26,7 @@ const router = new VueRouter({
     }
 });
 
+alert("dddd")
 
 const app = new Vue({
     router
